@@ -8,7 +8,7 @@ def write_file(working_directory, file_path, content):
     non_file_path = os.path.join(working_directory,('/').join(end_file_path[:-1]))
 
     try:
-        if end_file_path[0] not in dir_list:
+        if len(end_file_path) > 1 and end_file_path[0] not in dir_list:
             return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
 
         if not os.path.exists(non_file_path):

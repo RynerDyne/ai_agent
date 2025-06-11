@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+from get_files_info import get_files_info
+from get_file_content import get_file_content
+from run_python_file import run_python_file
+from write_file import write_file
+
 load_dotenv()
 api_key =  os.environ.get("GEMINI_API_KEY")
 
@@ -114,7 +119,49 @@ response = client.models.generate_content(
 
 function_call_part = response.function_calls[0]
 
-if len(sys.argv) == 3 and sys.argv[2] == '--verbose':
-                print(f"User prompt: {user_prompt}\nPrompt tokens: {response.usage_metadata.prompt_token_count}\nResponse tokens: {response.usage_metadata.candidates_token_count}")
+def call_function(function_call_part, verbose=False):
+    working_directory = './calculator/'
+    function_name = function_call_part.name
+    function_args = function_call_part.args
 
-print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+    if verbose == True:
+        print(f"Calling function: {function_name}({function_args})")
+    else:
+        print(f" - Calling function: {function_name}")
+
+    match function_name:
+        case 'get_files_info':
+            print("test")
+            function_result = get_files_info(working_directory, **function_args)
+        case 'get_file_content':
+            function_result = get_file_content(working_directory, **function_args)
+        case 'run_python_file':
+            function_result = run_python_file(working_directory, **function_args)
+        case 'write_file':
+            function_result = write_file(working_directory, **function_args)
+        case _:
+            return types.Content(
+                role="tool",
+                parts=[
+                    types.Part.from_function_response(
+                        name=function_name,
+                        response={"error": f"Unknown function: {function_name}"}
+                    )
+                ]
+            )
+    return types.Content(
+        role="tool",
+        parts=[
+            types.Part.from_function_response(
+                name=function_name,
+                response={"result": function_result},
+            )
+        ],
+    )
+
+if len(sys.argv) == 3 and sys.argv[2] == '--verbose':
+    function_call_result = call_function(function_call_part, verbose=True)
+else:
+    function_call_result = call_function(function_call_part)
+
+print(f"-> {function_call_result.parts[0].function_response.response}")
