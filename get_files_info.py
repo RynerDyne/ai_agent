@@ -2,10 +2,6 @@ import os
 
 
 def get_files_info(working_directory, directory=None):
-    # Get a list of directorie under working directory (1 level deep?)
-    # if directory is not within the list return error
-    # if directory in list return directory files/dirs
-    # if dir is None or '.' then dir is working directory
     dir_list = os.listdir(working_directory)
     cur_dir = working_directory
     if directory != None and directory != '.' and directory not in dir_list:
