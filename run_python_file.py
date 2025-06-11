@@ -5,10 +5,6 @@ from subprocess import run
 def run_python_file(working_directory, file_path):
     try:
         full_dir = os.path.join(working_directory, file_path)
-
-#        assert os.path.isdir(working_directory)
-#        assert os.path.isfile(full_dir)
-
         dir_list = os.listdir(working_directory)
         file_path_list = file_path.split('/')
 
