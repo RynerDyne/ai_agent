@@ -1,9 +1,9 @@
-from get_files_content import get_file_content
+from write_file import write_file
 
 
-test1 = get_file_content('calculator', 'main.py')
-test2 = get_file_content('calculator', 'pkg/calculator.py')
-test3 = get_file_content('calculator', '/bin/cat')
+test1 = write_file("calculator", "loren.txt", "wait, this isn't lorem ipsum")
+test2 = write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
+test3 = write_file("calculator", "/tmp/temp.txt", "this should not be allowed")
 
 print(f"""
 Test one: {test1}
